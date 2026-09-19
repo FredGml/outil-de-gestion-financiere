@@ -1,0 +1,56 @@
+name: 🚀 Build & Release Windows
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'       # Déclenché sur push d'un tag comme v1.0.3
+  workflow_dispatch:    # Déclenchement manuel depuis l'interface GitHub
+
+jobs:
+  build-and-release:
+    name: Build Windows Installer
+    runs-on: windows-latest
+
+    permissions:
+      contents: write   # Nécessaire pour créer les releases GitHub
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Installation de Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Installation des dépendances
+        run: npm ci
+
+      - name: 🔨 Build de l'application Electron
+        run: npm run electron:build
+        env:
+          # Désactive la signature de code (pas de certificat configuré)
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: 📤 Création de la Release GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Outil de Gestion Financière ${{ github.ref_name }}"
+          body: |
+            ## 📦 Installation
+
+            Téléchargez et exécutez le fichier `.exe` ci-dessous.
+
+            > **Note Windows :** Si Windows SmartScreen affiche un avertissement,
+            > cliquez sur **"Informations complémentaires"** → **"Exécuter quand même"**.
+
+            ## 🆕 Changements
+            _Voir le [CHANGELOG](https://github.com/FredGml/outil-de-gestion-financiere/commits/main) pour la liste complète des modifications._
+          files: |
+            release/**/*-Setup-*.exe
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
