@@ -27,10 +27,13 @@ jobs:
       - name: 📦 Installation des dépendances
         run: npm ci
 
-      - name: 🔨 Build de l'application Electron
-        run: npm run electron:build
+      - name: 🎨 Build Vite (interface renderer)
+        run: npx vite build
+
+      - name: 🔨 Packaging Electron (installateur Windows)
+        run: npx electron-builder --publish never
         env:
-          # Désactive la signature de code (pas de certificat configuré)
+          # Désactive la recherche automatique de certificat de signature de code
           CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - name: 📤 Création de la Release GitHub
