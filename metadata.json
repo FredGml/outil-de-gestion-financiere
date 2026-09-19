@@ -1,0 +1,5 @@
+{
+  "name": "Outil de Secrétaire Administratif et Financier",
+  "description": "Un outil web professionnel pour simplifier les tâches financières et administratives quotidiennes d'un secrétaire administratif et financier. Il permet la gestion des dépenses, factures, bons de caisse, rapports et documents, avec des fonctionnalités d'exportation complètes.",
+  "requestFramePermissions": []
+}
